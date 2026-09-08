@@ -220,11 +220,13 @@ ComponentWithStore({
       if (functionButtonObserver) {
         functionButtonObserver.disconnect();
       }
-      functionButtonObserver = this.createIntersectionObserver({
-        thresholds: [0, 0.05, 0.1, 0.5, 1],
-      });
-      functionButtonObserver.relativeToViewport();
-      functionButtonObserver.observe("#function-button-anchor", (res) => {
+      const nextObserver: WechatMiniprogram.IntersectionObserver =
+        this.createIntersectionObserver({
+          thresholds: [0, 0.05, 0.1, 0.5, 1],
+        });
+      functionButtonObserver = nextObserver;
+      nextObserver.relativeToViewport();
+      nextObserver.observe("#function-button-anchor", (res) => {
         const isVisible = !!res && res.intersectionRatio > 0;
         this.setData({
           showFloatingExportButton: !isVisible,

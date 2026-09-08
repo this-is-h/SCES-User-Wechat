@@ -27,15 +27,13 @@ import { fileURLToPath } from 'node:url'
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
 const LIB_FILES = [
-  path.join(ROOT, 'user', 'wechat', 'miniprogram', 'node_modules', 'node-forge', 'lib', 'util.js'),
-  path.join(ROOT, 'user', 'wechat', 'miniprogram', 'node_modules', 'node-forge', 'lib', 'random.js'),
-  path.join(ROOT, 'user', 'wechat', 'miniprogram', 'node_modules', 'node-forge', 'lib', 'prng.js'),
+  path.join(ROOT, 'miniprogram', 'node_modules', 'node-forge', 'lib', 'util.js'),
+  path.join(ROOT, 'miniprogram', 'node_modules', 'node-forge', 'lib', 'random.js'),
+  path.join(ROOT, 'miniprogram', 'node_modules', 'node-forge', 'lib', 'prng.js'),
 ]
 
 const BUNDLE = path.join(
   ROOT,
-  'user',
-  'wechat',
   'miniprogram',
   'miniprogram_npm',
   'node-forge',
