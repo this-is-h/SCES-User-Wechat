@@ -1,0 +1,50 @@
+<!--index.wxml-->
+<van-config-provider theme-vars="{{themeVar}}">
+  <view class="root">
+    <van-nav-bar
+      title="智分数"
+      fixed
+      placeholder
+      z-index="9999"
+    />
+    <van-notify id="van-notify" />
+    <van-toast id="van-toast" />
+    <van-dialog id="van-dialog" />
+    <view class="private">
+      <rich-text nodes="{{privateHtml}}"></rich-text>
+      <view class="private-confirm">
+        <view class="private-confirm-message">
+          <view class="private-confirm-message-tips">
+            <text>请先同意我们的隐私协议</text>
+            <text>即可正常使用全部功能</text>
+          </view>
+          <view class="private-confirm-message-check">
+            <van-button plain hairline round type="info" size="mini" bind:click="handleOpenPrivacyContract" class="button-open-privacy">查看《隐私协议》</van-button>
+          </view>
+        </view>
+        <van-button round type="info" open-type="agreePrivacyAuthorization" bind:agreeprivacyauthorization="handleAgreePrivacyAuthorization" custom-style="width:100%">✅ 同意隐私协议并继续</van-button>
+      </view>
+      <!-- <view>隐私弹窗内容....</view>
+      <button bindtap="handleOpenPrivacyContract">查看隐私协议</button>
+      <button id="agree-btn" open-type="agreePrivacyAuthorization" bindagreeprivacyauthorization="handleAgreePrivacyAuthorization">同意</button> -->
+    </view>
+    <!-- <view class="main">
+      <van-button type="info" bind:agreeprivacyauthorization="{{ con }}">主要按钮</van-button>
+    </view> -->
+  </view>
+  <van-popup
+    show="{{ unitShow }}"
+    round
+    position="bottom"
+    custom-style="padding: 1em"
+  >
+    <van-cascader
+      wx:if="{{ unitShow }}"
+      value="{{ unitValue }}"
+      title="请选择所在院校"
+      options="{{ units }}"
+      bind:close="onUnitClose"
+      bind:finish="onUnitFinish"
+    />
+  </van-popup>
+</van-config-provider>

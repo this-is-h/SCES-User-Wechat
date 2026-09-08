@@ -1,0 +1,26 @@
+/* pages/main/settings.wxss */
+/* @media (prefers-color-scheme: dark) {
+  .van-cell {
+    background-color: var(--van-doc-background-2)!important;
+    color: var(--van-doc-text-color-1)!important;
+  }
+} */
+.scroll-root {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.h1 {
+  color: var(--van-doc-text-color-1);
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 20px 0.5em;
+}
+
+.h2 {
+  color: var(--van-doc-text-color-4);
+  font-size: 14px;
+  font-weight: 400;
+  padding: 0.7em 20px;
+}

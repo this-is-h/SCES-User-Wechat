@@ -1,0 +1,11 @@
+# 构建产物与本地配置
+node_modules
+miniprogram_npm
+.DS_Store
+*.log
+
+# 微信开发者工具生成本地私有配置（官方建议不提交）
+project.private.config.json
+
+# shared 镜像源校验标记（--check 产物，勿提交）
+.tmpdiff/

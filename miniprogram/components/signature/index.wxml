@@ -1,0 +1,13 @@
+<!--components/signature/index.wxml-->
+<view class="container {{fullScreen ? 'fullScreen' : ''}}">
+  <canvas type="2d" class="canvas" disable-scroll="true" catchtouchstart="uploadScaleStart" catchtouchmove="uploadScaleMove" catchtouchend="uploadScaleEnd" id="handWriting">
+    </canvas>
+  <view class="tips">
+    请在框内签字
+  </view>
+  <view class='addBtn'>
+    <button class='txt' bindtap="cancelTap">{{fullScreen ? '缩小' : '放大'}}</button>
+    <button class='txt' bindtap="retDraw">重新签名</button>
+    <button class='txt main' bindtap="confirmTap">提交签字</button>
+  </view>
+</view>

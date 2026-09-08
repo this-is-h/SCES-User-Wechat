@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "module": "CommonJS",
+    // 必须 ≤ ES2017：微信开发者工具「自动预览/上传」的 JS 解析器不支持 ES2020 语法
+    // （?. 可选链 / ?? 空值合并，报 Unexpected token: punc (.)）。
+    // tsc 会按此 target 将 ?. / ?? 降级为三元表达式；async/await（ES2017）保留原生。
+    // lib 保持 ES2020 仅影响类型检查，不影响产物语法。
+    "target": "ES2017",
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "noImplicitThis": true,
+    "noImplicitReturns": true,
+    "alwaysStrict": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strict": true,
+    "strictPropertyInitialization": true,
+    "lib": ["ES2020"],
+    "typeRoots": [
+      "./typings"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@vant/weapp/*": ["miniprogram/node_modules/@vant/weapp/dist/*"]
+    }
+  },
+  "include": [
+    "./**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

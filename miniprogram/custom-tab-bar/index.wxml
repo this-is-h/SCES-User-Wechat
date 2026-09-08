@@ -1,0 +1,6 @@
+<!--custom-tab-bar/index.wxml-->
+<van-config-provider theme-vars="{{themeVar}}">
+  <van-tabbar active="{{ active }}" border="{{ false }}" custom-class="tabbar-theme" bind:change="onChange">
+    <van-tabbar-item wx:for="{{list}}" wx:key="index" class="tab-bar-item" data-path="{{item.pagePath}}" data-index="{{index}}" icon="{{item.icon}}">{{item.text}}</van-tabbar-item>
+  </van-tabbar>
+</van-config-provider>

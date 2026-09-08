@@ -1,0 +1,20 @@
+{
+  "name": "miniprogram-ts-quickstart",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@vant/weapp": "^1.11.7",
+    "miniprogram-computed": "^8.0.0",
+    "mobx-miniprogram": "^6.12.3",
+    "mobx-miniprogram-bindings": "^6.0.0",
+    "node-forge": "^1.4.0"
+  },
+  "devDependencies": {
+    "@types/node-forge": "^1.3.14",
+    "miniprogram-api-typings": "^5.1.2"
+  }
+}

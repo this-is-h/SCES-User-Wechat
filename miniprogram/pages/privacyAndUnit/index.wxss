@@ -1,0 +1,83 @@
+/**index.wxss**/
+.private {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.welcome {
+  width: 650rpx;
+  font-size: 32rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+}
+
+.welcome-title {
+  font-size: 48rpx;
+}
+
+.welcome-info-subhead {
+  border-left: 3px solid var(--van-doc-blue);
+  padding-left: 12px;
+}
+
+.privacy-highlight {
+  color: var(--van-doc-text-color-2);
+  background: var(--van-doc-blockquote-background);
+  border-radius: 20px;
+  padding: 14px 16px;
+  border: 1px solid var(--van-doc-border-color);
+  font-size: 28rpx;
+}
+
+.privacy-text {
+  flex: 1;
+  color: var(--van-doc-text-color-2);
+  line-height: 1.45;
+}
+
+.private-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  margin-top: 1em;
+}
+
+.private-confirm-message {
+  font-size: 25rpx;
+  color: var(--van-doc-gray-8);
+  display: flex;
+  align-items: center;
+  gap: 2em;
+  background: var(--van-doc-warning-background);
+  padding: 8px 14px;
+  border-radius: 40px;
+  border: 1px solid var(--van-doc-warning-border);
+}
+
+.private-confirm-message-tips {
+  display: flex;
+  flex-direction: column;
+}
+
+.private-confirm-message-check {
+  color: var(--van-doc-blue);
+  font-weight: bold;
+}
+
+.main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.button-open-privacy .van-button__text {
+  padding-left: 1em!important;
+  padding-right: 1em!important;
+}

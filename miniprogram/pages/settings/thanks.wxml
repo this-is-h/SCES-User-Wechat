@@ -1,0 +1,36 @@
+<!--pages/main/thanks.wxml-->
+<van-config-provider theme-vars="{{themeVar}}">
+  <view class="root" style="--status-bar-height: {{statusBarHeight}}px;">
+    <van-nav-bar title="致谢名单" fixed placeholder z-index="9999" left-text="返回" left-arrow bind:click-left="onBack" />
+    <van-notify id="van-notify" />
+    <scroll-view scroll-y="true" 	enable-passive="true">
+      <view class="scroll-root">
+        <!-- <view class="h1">致谢名单</view> -->
+        <view class="h2">特别鸣谢</view>
+        <van-cell-group inset custom-class="thanks">
+          <van-cell title="H" label="This is H" center is-link bind:click="dialogHShow">
+            <image slot="icon" mode="aspectFit" class="thanks-avatar" src="/images/h.png" />
+          </van-cell>
+          <van-dialog show="{{dialogH}}" title="关注我们" use-slot>
+            <image class="dialog-h-image" show-menu-by-longpress mode="aspectFit" src="/images/gzh-large.png" />
+          </van-dialog>
+          <van-cell title="Karl" label="Your Name Engraved Herein" center>
+            <image slot="icon" mode="aspectFit" class="thanks-avatar" src="/images/karl.jpg" />
+          </van-cell>
+          <van-cell title="Yolo" label="Your Name Engraved Herein" center>
+            <image slot="icon" mode="aspectFit" class="thanks-avatar" src="/images/yolo.jpg" />
+          </van-cell>
+          <van-cell title="邮寄日出🌅" label="风遇山止，船遇岸停" center>
+            <image slot="icon" mode="aspectFit" class="thanks-avatar" src="/images/yjrc.jpg" />
+          </van-cell>
+        </van-cell-group>
+        <view class="h2">项目支持</view>
+        <van-cell-group inset>
+          <van-cell title="Watt Toolkit" label="「Watt Toolkit」是一个开源跨平台的多功能 Steam 工具箱。" center>
+            <image slot="icon" mode="aspectFit" class="thanks-avatar" src="https://steampp.net/svg/logo.png" />
+          </van-cell>
+        </van-cell-group>
+      </view>
+    </scroll-view>
+  </view>
+</van-config-provider>

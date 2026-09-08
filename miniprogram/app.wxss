@@ -1,0 +1,125 @@
+/**app.wxss**/
+/* @import '@vant/weapp/common/index.wxss'; */
+page {
+  --van-doc-black: #000;
+  --van-doc-white: #fff;
+  --van-doc-gray-1: #f7f8fa;
+  --van-doc-gray-2: #f2f3f5;
+  --van-doc-gray-3: #ebedf0;
+  --van-doc-gray-4: #dcdee0;
+  --van-doc-gray-5: #c8c9cc;
+  --van-doc-gray-6: #969799;
+  --van-doc-gray-7: #646566;
+  --van-doc-gray-8: #323233;
+  --van-doc-blue: #1989fa;
+  --van-doc-green: #07c160;
+  --van-doc-purple: #8e69d3;
+  --van-doc-code-font-family: "Menlo", "Source Code Pro", "Monaco", "Inconsolata", monospace;
+  /* light */
+  --van-doc-text-color-1: var(--van-doc-black);
+  --van-doc-text-color-2: var(--van-doc-gray-8);
+  --van-doc-text-color-3: #34495e;
+  --van-doc-text-color-4: var(--van-doc-gray-6);
+  --van-doc-link-color: var(--van-doc-blue);
+  --van-doc-background: #eff2f5;
+  --van-doc-background-2: var(--van-doc-white);
+  --van-doc-background-3: var(--van-doc-white);
+  --van-doc-header-background: #011f3c;
+  --van-doc-border-color: var(--van-doc-gray-2);
+  --van-doc-code-color: #58727e;
+  --van-doc-code-comment-color: var(--van-doc-gray-6);
+  --van-doc-code-background: var(--van-doc-gray-1);
+  --van-doc-blockquote-color: #2f85da;
+  --van-doc-blockquote-background: #ecf9ff;
+  --van-doc-danger-color: #ee0a24;
+  --van-doc-warning-background: #fff7e6;
+  --van-doc-warning-border: #ffd666;
+  --van-doc-warning-text: #ad6800;
+
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica,
+  Segoe UI, Arial, Roboto, 'PingFang SC', 'miui', 'Hiragino Sans GB', 'Microsoft Yahei',
+  sans-serif;
+  background-color: var(--van-doc-background);
+  color: var(--van-doc-text-color-1)
+}
+
+/* Vant 1.x hairlines use a fixed light color internally. Rebind them to the
+   active palette so separators remain subtle and readable in dark mode. */
+.van-cell:after,
+.van-hairline:after,
+.van-hairline--bottom:after,
+.van-hairline--left:after,
+.van-hairline--right:after,
+.van-hairline--surround:after,
+.van-hairline--top-bottom:after,
+.van-hairline--top:after {
+  border-color: var(--van-doc-border-color)!important;
+}
+
+/* @media (prefers-color-scheme: dark) {
+  page {
+    --van-doc-text-color-1: var(--van-doc-white);
+    --van-doc-text-color-2: rgba(255, 255, 255, .9);
+    --van-doc-text-color-3: rgba(255, 255, 255, .75);
+    --van-doc-text-color-4: rgba(255, 255, 255, .6);
+    --van-doc-link-color: #1bb5fe;
+    --van-doc-background: #202124;
+    --van-doc-background-2: rgba(255, 255, 255, .06);
+    --van-doc-background-3: rgba(255, 255, 255, .1);
+    --van-doc-header-background: rgba(1, 31, 60, .3);
+    --van-doc-border-color: #3a3a3c;
+    --van-doc-code-color: rgba(200, 200, 200, .85);
+    --van-doc-code-comment-color: var(--van-doc-gray-7);
+    --van-doc-code-background: rgba(0, 0, 0, .24);
+    --van-doc-blockquote-color: #bae6fd;
+    --van-doc-blockquote-background: rgba(7, 89, 133, .25);
+  }
+
+  .van-nav-bar {
+    background-color: #37383a!important;
+  }
+  .bar-index--van-nav-bar__title {
+    color: var(--van-doc-text-color-1)!important;
+  }
+  .bar-index--van-hairline--bottom::after {
+    border-color: var(--van-doc-border-color)!important;
+  }
+} */
+
+.root {
+  width: 750rpx;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--van-doc-background);
+  color: var(--van-doc-text-color-1);
+}
+
+.root scroll-view {
+  box-sizing: border-box;
+  height: calc(100vh - 46px - 50px - var(--status-bar-height));
+}
+
+.root scroll-view .scroll-root {
+  box-sizing: border-box;
+  padding: 20px 0;
+}
+
+/* Vant Cascader 1.11 hard-codes the tab colors, so keep its selected path
+ * readable when the surrounding theme switches to dark mode. */
+.van-cascader__title {
+  color: var(--van-doc-text-color-1) !important;
+}
+
+.van-tabs__scroll {
+  background-color: var(--tabs-nav-background-color) !important;
+}
+
+.van-cascader__tab {
+  color: var(--tab-text-color) !important;
+}
+
+.van-cascader__tab--unselected {
+  color: var(--tab-disabled-text-color) !important;
+}

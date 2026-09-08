@@ -1,0 +1,3 @@
+<van-config-provider theme-vars="{{themeVar}}">
+  <signaturehetong fullScreen="{{true}}" bindconfirm="confirmTap" bindcancel="cancelTap"></signaturehetong>
+</van-config-provider>

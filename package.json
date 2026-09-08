@@ -1,0 +1,20 @@
+{
+  "name": "sces-user",
+  "version": "0.1.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "prepare": "husky",
+    "type-check": "tsc -p tsconfig.json --noEmit",
+    "sync:shared": "node scripts/sync-shared.mjs",
+    "check:shared-mirror": "node scripts/sync-shared.mjs --check",
+    "patch:node-forge": "node scripts/patch-node-forge.mjs",
+    "audit": "npm audit --audit-level=high --prefix miniprogram"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "husky": "^9.1.7",
+    "typescript": "~5.9.3"
+  }
+}

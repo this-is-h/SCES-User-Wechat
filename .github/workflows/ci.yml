@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [develop, main]
+
+permissions:
+  contents: read
+
+jobs:
+  branch-name:
+    name: 分支名校验（简化版 Git Flow）
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - name: 校验分支前缀
+        run: |
+          ref="${{ github.ref_name }}"
+          case "$ref" in
+            main|develop|feature/*|bugfix/*|hotfix/*|chore/*|release/*)
+              ;;
+            *)
+              echo "::error::分支名违规：$ref（须以 feature/ bugfix/ hotfix/ chore/ release/ 开头，或为 main/develop）"
+              exit 1
+              ;;
+          esac
+
+  typecheck:
+    name: 类型检查门禁
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: miniprogram/package-lock.json
+      - name: 安装小程序依赖（构建 npm 的前置）
+        run: npm ci --prefix miniprogram
+      - name: 根工具依赖
+        run: npm ci
+      - run: npm run type-check
+
+  supply-chain-audit:
+    name: 供应链安全检查
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: miniprogram/package-lock.json
+      - run: npm ci --prefix miniprogram
+      - run: npm audit --audit-level high --prefix miniprogram
+
+  gitleaks:
+    name: 密钥泄漏扫描
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

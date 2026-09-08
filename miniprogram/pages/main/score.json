@@ -1,0 +1,12 @@
+{
+  "usingComponents": {
+    "van-config-provider": "@vant/weapp/config-provider/index",
+    "van-nav-bar": "@vant/weapp/nav-bar/index",
+    "van-notify": "@vant/weapp/notify/index",
+    "van-toast": "@vant/weapp/toast/index",
+    "van-dialog": "@vant/weapp/dialog/index",
+    "van-icon": "@vant/weapp/icon/index",
+    "van-notice-bar": "@vant/weapp/notice-bar/index",
+    "signaturehetong": "../../components/signature/index"
+  }
+}

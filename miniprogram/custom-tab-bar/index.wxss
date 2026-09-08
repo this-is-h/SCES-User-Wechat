@@ -1,0 +1,8 @@
+/* custom-tab-bar/index.wxss */
+.van-config-provider {
+  background-color: var(--van-doc-background-2);
+}
+
+.tabbar-theme {
+  box-shadow: var(--tabbar-box-shadow);
+}

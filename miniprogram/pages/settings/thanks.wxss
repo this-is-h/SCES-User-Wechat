@@ -1,0 +1,31 @@
+/* pages/main/thanks.wxss */
+.root scroll-view {
+  height: calc(100vh - 46px - var(--status-bar-height));
+}
+
+.h1 {
+  color: var(--van-doc-text-color-1);
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 20px 0.5em;
+}
+
+.h2 {
+  color: var(--van-doc-text-color-4);
+  font-size: 14px;
+  font-weight: 400;
+  padding: 0.7em 20px;
+}
+
+.thanks-avatar {
+  margin-right: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 100%;
+}
+
+.dialog-h-image {
+  box-sizing: border-box;
+  padding: 1em 0.5em;
+  height: 140px;
+}

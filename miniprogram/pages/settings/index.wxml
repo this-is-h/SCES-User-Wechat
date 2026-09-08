@@ -1,0 +1,64 @@
+<!--pages/main/settings.wxml-->
+<van-config-provider theme-vars="{{themeVar}}">
+  <view class="root" style="--status-bar-height: {{statusBarHeight}}px;">
+    <van-nav-bar title="智分数" fixed placeholder z-index="9999" />
+    <van-notify id="van-notify" />
+    <van-toast id="van-toast" />
+    <scroll-view scroll-y="true" enable-passive="true">
+      <view class="scroll-root">
+        <view>
+          <view class="h2">院校设置</view>
+          <van-cell-group inset>
+            <van-field value="{{ unitTitle }}" is-link readonly label="院校" placeholder="请选择所在院校" bind:tap="onUnitShow" />
+            <van-popup show="{{unitShow}}" round position="bottom">
+              <van-cascader wx:if="{{ unitShow }}" value="{{ unitValue }}" title="请选择所在院校" options="{{ units }}" bind:close="onUnitClose" bind:finish="onUnitFinish" />
+            </van-popup>
+          </van-cell-group>
+        </view>
+        <view>
+          <view class="h2">外观设置</view>
+          <van-radio-group value="{{ radio }}" bind:change="onChange">
+            <van-cell-group inset>
+              <van-cell title="浅色模式" clickable data-name="1" bind:click="onClick">
+                <van-radio slot="right-icon" name="1" />
+              </van-cell>
+              <van-cell title="深色模式" clickable data-name="2" bind:click="onClick">
+                <van-radio slot="right-icon" name="2" />
+              </van-cell>
+              <van-cell title="跟随系统" clickable data-name="3" bind:click="onClick">
+                <van-radio slot="right-icon" name="3" />
+              </van-cell>
+            </van-cell-group>
+          </van-radio-group>
+        </view>
+        <view>
+          <view class="h2">关于我们</view>
+          <van-cell-group inset>
+            <official-account>
+              <van-cell title="小程序版本" value="{{appVersion}}" />
+            </official-account>
+            <van-cell title="小程序版本" value="{{appVersion}}" />
+            <van-cell is-link title="致谢名单" link-type="navigateTo" url="/pages/settings/thanks" />
+          </van-cell-group>
+        </view>
+        <view>
+          <view class="h2">配置信息</view>
+          <van-cell-group inset>
+            <van-cell title="配置名称" value="{{configName}}" />
+            <van-cell title="配置版本" value="{{configVersion}}" />
+            <van-cell title="配置修订" value="{{configRevision}}" />
+            <van-cell title="配置标识" value="{{profileId}}" />
+            <van-cell title="批次密钥" value="{{keyId}}" />
+          </van-cell-group>
+        </view>
+        <view>
+          <view class="h2">数据与隐私</view>
+          <van-cell-group inset>
+            <van-cell is-link title="清除本机数据" bind:click="onWipeShow" />
+          </van-cell-group>
+          <van-dialog id="van-dialog" />
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+</van-config-provider>

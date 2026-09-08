@@ -1,0 +1,113 @@
+/* pages/signature/index.wxss */
+.container {
+  width: 95%;
+  height: 400rpx;
+  margin:auto;
+  box-sizing: border-box;
+  background: var(--van-doc-background-2);
+  border-radius: 5px;
+}
+.canvas {
+  width: 100%;
+  height: 300rpx;
+  border: 1px solid var(--van-doc-border-color);
+  box-sizing: border-box;
+  margin-top: 20rpx;
+}
+.tips{
+  height: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--van-doc-text-color-4);padding: 20rpx;
+}
+ 
+.addBtn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: auto;
+  width: 100%;
+  background: var(--van-doc-background-2);
+  gap: 16rpx;
+  padding: 0 12rpx;
+  box-sizing: border-box;
+}
+ 
+.addBtn .txt {
+  text-align: center;
+  flex: 1;
+  width: auto;
+  min-width: 0;
+  height: 72rpx;
+  line-height: 72rpx;
+  font-size: 26rpx;
+  border-radius: 100px;
+  border: 1rpx solid var(--van-doc-border-color);
+  background: var(--van-doc-background-2);
+  color: var(--van-doc-text-color-2);
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0 8rpx;
+  z-index: 100;
+}
+
+.addBtn .txt.main {
+  background: var(--van-doc-blue);
+  color: var(--van-doc-white);
+}
+
+.container.fullScreen {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  border-radius: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  padding: 16rpx;
+  gap: 16rpx;
+  position: relative;
+}
+
+.container.fullScreen .canvas {
+  flex: 1;
+  width: auto;
+  height: auto;
+  min-width: 0;
+  min-height: 0;
+  margin-top: 0;
+}
+
+.container.fullScreen .tips {
+  position: absolute;
+  left: 28rpx;
+  top: 18rpx;
+  height: auto;
+  padding: 0;
+  font-size: 22rpx;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.container.fullScreen .addBtn {
+  flex: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  align-self: center;
+  width: 105rpx;
+  height: auto;
+  padding: 0;
+  gap: 11rpx;
+}
+
+.container.fullScreen .addBtn .txt {
+  flex: none;
+  width: 100%;
+  height: 45rpx;
+  line-height: 45rpx;
+  font-size: 17rpx;
+  padding: 0 6rpx;
+}

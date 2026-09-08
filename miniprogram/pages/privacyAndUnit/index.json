@@ -1,0 +1,12 @@
+{
+  "usingComponents": {
+    "van-config-provider": "@vant/weapp/config-provider/index",
+    "van-nav-bar": "@vant/weapp/nav-bar/index",
+    "van-popup": "@vant/weapp/popup/index",
+    "van-cascader": "@vant/weapp/cascader/index",
+    "van-button": "@vant/weapp/button/index",
+    "van-notify": "@vant/weapp/notify/index",
+    "van-toast": "@vant/weapp/toast/index",
+    "van-dialog": "@vant/weapp/dialog/index"
+  }
+}

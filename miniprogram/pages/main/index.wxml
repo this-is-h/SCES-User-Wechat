@@ -1,0 +1,109 @@
+<!--index.wxml-->
+<van-config-provider theme-vars="{{themeVar}}">
+  <view class="root" style="--status-bar-height: {{statusBarHeight}}px;">
+    <van-nav-bar title="智分数" fixed placeholder z-index="9999" />
+    <van-notify id="van-notify" />
+    <van-toast id="van-toast" />
+    <!-- 原生 2D Canvas 压缩证明材料；保持在页面树中，避免 display:none 导致画布无法渲染。 -->
+    <canvas id="evidenceCompressCanvas" type="2d" style="position: fixed; left: -10000px; top: -10000px; width: 1px; height: 1px; opacity: 0;"></canvas>
+    <scroll-view scroll-y="true" enable-passive="true" scroll-into-view="{{scrollIntoViewId}}" scroll-with-animation>
+      <van-notice-bar wx:if="{{!caps.statusQuery}}" text="{{statusHint}}" />
+      <van-notice-bar
+        wx:if="{{batchIsTest}}"
+        text="当前为测试批次，请按真实情况填写；转入同学期正式批次时会保留填写数据。"
+      />
+      <view class="scroll-root">
+        <view wx:if="{{caps.statusQuery}}" class="status-card">
+          <view class="status-card-title">审核进度</view>
+          <view class="status-card-body">
+            <block wx:if="{{applyStatusText}}">
+              <text>{{applyStatusText}}</text>
+            </block>
+            <block wx:else>
+              <text>暂无申请记录</text>
+            </block>
+          </view>
+          <view wx:if="{{caps.rankingView}}" class="ranking-entry" bind:tap="onRankingTap">查看排名</view>
+        </view>
+        <view>
+          <view class="h1">基础信息</view>
+          <van-cell-group inset>
+            <view id="class-value-field">
+              <van-field value="{{ classValue.title || '' }}" is-link readonly required label="班级信息" placeholder="请选择班级信息" error-message="{{ classValueErrorMessage || '' }}" bind:tap="onClassCascaderShow" />
+            </view>
+            <van-popup show="{{ classCascaderShow }}" round position="bottom" bind:close="onClassCascaderClose">
+              <van-cascader wx:if="{{ classCascaderShow }}" value="{{ classValue.value }}" title="请选择班级信息" options="{{ classInfo.options }}" bind:close="onClassCascaderClose" bind:finish="onClassCascaderFinish" />
+            </van-popup>
+            <view>
+              <van-field wx:for="{{ studentInfo }}" wx:key="code" id="{{ 'student-field-' + item.code }}" name="{{ item.code }}" label="{{ item.label }}" value="{{ student[item.code] || '' }}" type="{{ item.type }}" required="{{ item.required }}" disabled="{{ item.fromClass }}" placeholder="{{ item.fromClass ? '请通过班级信息选择' : '请输入' + item.label }}" error-message="{{ studentFieldErrors[item.code] || '' }}" border="{{ false }}" bind:change="onFeildChange" data-type="student" data-id="{{ item.code }}" />
+            </view>
+            <view>
+              <van-field required="true" disabled="true" label="学年" value="{{ yearText || '' }}" readonly border="{{ false }}" />
+              <van-field required="true" disabled="true" label="学期" value="{{ semesterText || '' }}" readonly border="{{ false }}" />
+            </view>
+          </van-cell-group>
+        </view>
+
+        <view wx:for="{{ scoreInfo }}" wx:for-item="category" wx:key="code" class="score">
+          <view class="h1">{{ category.category.name }}</view>
+          <view class="score-group">
+            <view wx:for="{{ category.groups }}" wx:for-item="group" wx:key="code">
+              <view class="h2">{{ group.name }}</view>
+              <van-cell-group inset>
+                <block wx:for="{{ group.items }}" wx:for-item="item" wx:key="code">
+                  <van-cell wx:if="{{ item.kind === 'stepper' }}" id="{{ 'score-field-' + item.code }}" title="{{ item.negative ? item.code + '（此项分数需扣除）' : item.code }}" label="{{ item.description }}" title-width="60%" center>
+                    <view>
+                      <van-stepper theme="round" value="{{ score[item.code].score }}" min="{{ item.min }}" max="{{ item.max }}" step="{{ item.step }}" data-id="{{ item.code }}" data-type="score" bind:change="onFeildChange" />
+                    </view>
+                  </van-cell>
+                  <van-cell wx:elif="{{ item.kind === 'radio' }}" id="{{ 'score-field-' + item.code }}" title="{{ item.negative ? item.code + '（此项分数需扣除）' : item.code }}" label="{{ item.description }}" title-width="55%" center>
+                    <view>
+                      <van-radio-group value="{{ score[item.code].score }}" data-type="score" data-id="{{ item.code }}" bind:change="onFeildChange">
+                        <van-radio wx:for="{{ item.options }}" wx:for-item="opt" wx:key="value" name="{{ opt.value }}">{{ opt.label }}</van-radio>
+                      </van-radio-group>
+                    </view>
+                  </van-cell>
+                  <van-cell wx:else id="{{ 'score-field-' + item.code }}" title="{{ item.negative ? item.code + '（此项分数需扣除）' : item.code }}" label="{{ item.description }}" title-width="60%" center>
+                    <view>
+                      <van-field type="number" value="{{ score[item.code].score }}" placeholder="请输入分数" input-align="right" border="{{ false }}" data-id="{{ item.code }}" data-type="score" bind:change="onFeildChange" />
+                    </view>
+                  </van-cell>
+                  <view wx:if="{{ item.needSupport && score[item.code].score }}" id="{{ 'support-field-' + item.code }}">
+                    <van-cell title="{{ '证明材料（' + item.code + '）' }}" label="{{ item.supportMessage }}" title-width="50%" center>
+                      <view class="cell-value">
+                        <van-uploader preview-size="18vw" file-list="{{ score[item.code].file || [] }}" name="{{ item.code }}" max-count="6" bind:after-read="afterReadSupportImage" bind:delete="onDeleteSupportImage" />
+                      </view>
+                    </van-cell>
+                  </view>
+                </block>
+              </van-cell-group>
+            </view>
+          </view>
+        </view>
+
+        <view id="function-button-anchor" class="function-button">
+          <van-dialog show="{{ exportConfirmShow }}" use-slot use-title-slot title="导出前确认" message-align="center" show-cancel-button confirm-button-text="确认导出" cancel-button-text="取消" close-on-click-overlay bind:close="beforeExportDialogClose" bind:cancel="beforeExportDialogClose" bind:confirm="onExportDialogConfirm" confirm-button-color="#1989fa">
+            <view slot="title" class="export-dialog-title">导出确认</view>
+            <view class="export-dialog-notice">
+              <van-notice-bar wx:if="{{reExportWarning}}" text="{{reExportWarning}}" wrapable scrollable="{{ false }}" />
+            </view>
+            <view class="export-dialog-content">
+              <view>班级管理端每学期</view>
+              <view>每名学生仅能导入一次</view>
+              <!-- <view wx:if="{{reExportWarning}}" class="export-dialog-content-warning">{{reExportWarning}}</view> -->
+              <view>请再次确认：</view>
+              <view class="export-dialog-content-strong">信息是否完全正确</view>
+              <view class="export-dialog-content-strong">分数是否全部申请</view>
+              <view class="export-dialog-content-strong">证明材料是否完整且正确</view>
+              <view class="export-dialog-content-end">请确认无误后再导出并发送给班级管理员</view>
+            </view>
+          </van-dialog>
+          <van-button round type="info" block bind:click="exportFile">导出个人材料</van-button>
+        </view>
+      </view>
+    </scroll-view>
+    <view class="floating-export-button {{ showFloatingExportButton ? 'floating-export-button--visible' : '' }}">
+      <van-button round type="info" size="normal" bind:click="exportFile">📤 导出</van-button>
+    </view>
+  </view>
+</van-config-provider>

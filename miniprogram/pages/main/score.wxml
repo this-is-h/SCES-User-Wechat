@@ -1,0 +1,78 @@
+<!--pages/main/score.wxml-->
+<van-config-provider theme-vars="{{themeVar}}">
+  <view class="root" style="--status-bar-height: {{statusBarHeight}}px;">
+    <van-nav-bar title="分数确认" fixed placeholder z-index="9999" left-text="返回" left-arrow bind:click-left="onBack" />
+    <van-notify id="van-notify" />
+    <van-toast id="van-toast" />
+    <view wx:if="{{takeHighestWarningText}}" class="take-highest-warning">
+      <van-icon name="warning-o" size="34rpx" color="#ad6800" class="take-highest-warning-icon" />
+      <view class="take-highest-warning-content">
+        <!-- <view class="take-highest-warning-title">取最高分提示</view> -->
+        <view class="take-highest-warning-text">{{takeHighestWarningText}}</view>
+      </view>
+    </view>
+    <scroll-view scroll-y="true" enable-passive="true">
+      <!-- <van-notice-bar wx:if="{{batchIsTest}}" color="#8a4b00" background="#fff7e6" text="测试批次确认单：请按真实情况核对，数据可迁移到同学期正式批次。" /> -->
+      <view class="scroll-root">
+        <view class="content-card">
+          <view class="title">{{titleText}}</view>
+          <view class="base-info">
+            <view>姓名：{{student.name}}</view>
+            <view>学号：{{student.studentId}}</view>
+            <view>专业：{{student.major}}</view>
+            <view>班级：{{student.className}}</view>
+          </view>
+          <view class="paragraph">{{applyText}}</view>
+          <view class="score-table">
+            <view class="score-row score-row-header">
+              <view class="score-col score-col-no">编号</view>
+              <view class="score-col score-col-desc">说明</view>
+              <view class="score-col score-col-score">分数</view>
+            </view>
+            <view wx:if="{{scoreItems.length > 0}}">
+              <view wx:for="{{scoreItems}}" wx:key="number" class="score-row">
+                <view class="score-col score-col-no">{{item.number}}</view>
+                <view class="score-col score-col-desc score-col-desc-content">{{item.description}}</view>
+                <view class="score-col score-col-score">{{item.finalScore}}</view>
+              </view>
+            </view>
+            <view wx:else class="empty-tip">暂无已申请分数</view>
+            <view class="score-row score-row-total">
+              <view class="score-col score-col-no">总分</view>
+              <view class="score-col score-col-desc"></view>
+              <view class="score-col score-col-score score-col-score-total">{{totalScoreDisplay}}</view>
+            </view>
+          </view>
+          <view class="paragraph">{{commitmentText}}</view>
+          <view class="closing">
+            <view class="closing-line">
+              <text>签名：</text>
+              <image wx:if="{{imgfile!=''}}" src="{{imgfile}}" mode="aspectFit" class="closing-sign-image"></image>
+              <text wx:else class="closing-sign-placeholder">________________</text>
+            </view>
+            <view class="closing-line">日期：{{dateText}}</view>
+          </view>
+          <view class="sign-area">
+            <view class="sign-title">签名采集</view>
+            <signaturehetong bindconfirm="confirmTap" bindcancel="cancelTap" wx:if="{{imgfile==''}}"></signaturehetong>
+            <view wx:if="{{imgfile!=''}}" class="signed-wrapper">
+              <image src="{{imgfile}}" mode="widthFix" class="signed-image"></image>
+              <view class="signed-buttons">
+                <button class="sign-btn plain" bindtap="retDraw">重新签名</button>
+                <button class="sign-btn main" bindtap="submitSign">提交确认单</button>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+    <van-dialog show="{{previewDialogShow}}" title="确认单预览" show-cancel-button cancel-button-text="取消" confirm-button-text="导出分数材料" close-on-click-overlay bind:cancel="closePreviewDialog" bind:confirm="exportScoreMaterial" bind:close="closePreviewDialog" use-slot>
+      <view class="preview-dialog">
+        <image src="{{allimgfile}}" mode="aspectFit" class="preview-image" bindtap="onPreviewSnapshot" show-menu-by-longpress="true"></image>
+        <view class="preview-tip">点击图片可放大预览，长按可保存</view>
+        <view class="preview-tip" wx:if="{{revisionText}}">{{revisionText}}，{{exportStatusText}}</view>
+      </view>
+    </van-dialog>
+    <canvas id="scoreSnapshotCanvas" type="2d" canvas-id="scoreSnapshotCanvas" style="width: {{snapshotCanvasWidth}}px; height: {{snapshotCanvasHeight}}px; position: fixed; left: -9999px; top: -9999px;"></canvas>
+  </view>
+</van-config-provider>
