@@ -26,10 +26,10 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-// 镜像源：sces-shared 独立仓库。开发机默认取同级目录 ../sces-shared/src，
+// 镜像源：SCES-Shared 独立仓库。开发机默认取同级目录 ../SCES-Shared/src，
 // 可用环境变量 DMS_SHARED_SRC 覆盖（如 CI 从 git 拉取指定 tag 后指向解包目录）。
-// 注意：sces-shared 的 build-noble-vendor 预打包产物随源一起镜像。
-const SRC = process.env.DMS_SHARED_SRC ?? path.join(ROOT, '..', 'sces-shared', 'src')
+// 注意：SCES-Shared 的 build-noble-vendor 预打包产物随源一起镜像。
+const SRC = process.env.DMS_SHARED_SRC ?? path.join(ROOT, '..', 'SCES-Shared', 'src')
 const DST = path.join(ROOT, 'miniprogram', 'shared')
 
 const CHECK = process.argv.includes('--check')

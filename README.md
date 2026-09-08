@@ -1,4 +1,4 @@
-# sces-user — 学生端（微信小程序）
+# SCES-User-Wechat — 学生端（微信小程序）
 
 学生综合素质测评管理系统（SCES）· 学生端。微信小程序 + vant-weapp + mobx-miniprogram + TypeScript。
 核心：学生填写德育分申请、上传证明材料、导出加密申请文件（.dyf）、查询审核状态与排名。
@@ -18,7 +18,7 @@
 npm ci --prefix miniprogram   # 小程序依赖
 npm ci                        # 根工具依赖（husky/commitlint/typescript）
 npm run patch:node-forge      # forge 补丁（构建 npm 前，幂等）
-npm run sync:shared           # 从 ../sces-shared 同步 shared 镜像
+npm run sync:shared           # 从 ../SCES-Shared 同步 shared 镜像
 npm run check:shared-mirror   # 校验镜像与源一致（--check）
 npm run type-check            # tsc 类型检查（ES2017 兼容约束）
 ```

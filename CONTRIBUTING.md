@@ -1,4 +1,4 @@
-# 贡献指南（sces-user · 学生端微信小程序）
+# 贡献指南（SCES-User-Wechat · 学生端微信小程序）
 
 本仓库采用**简化版 Git Flow** 与 **Conventional Commits（约定式提交）**，由钩子与 CI 强制落地。
 
@@ -34,9 +34,9 @@
 
 ## shared 镜像（重要）
 
-`miniprogram/shared/` 是 `sces-shared` 源码的**受控镜像**（生成物，勿手改）：
+`miniprogram/shared/` 是 `SCES-Shared` 源码的**受控镜像**（生成物，勿手改）：
 
-- 来源：同级目录 `../sces-shared/src`（可用 `DMS_SHARED_SRC` 环境变量覆盖，供 CI 按 tag 拉取）；
+- 来源：同级目录 `../SCES-Shared/src`（可用 `DMS_SHARED_SRC` 环境变量覆盖，供 CI 按 tag 拉取）；
 - 同步：`npm run sync:shared`；校验：`npm run check:shared-mirror`；
 - 镜像内含微信兼容重写（目录导入 → `/index`、ES2017）与 Node-only 路径排除；
 - `node-forge` 需构建 npm 前执行 `npm run patch:node-forge`（幂等）。
