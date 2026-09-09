@@ -8,7 +8,6 @@
   "license": "UNLICENSED",
   "dependencies": {
     "@vant/weapp": "^1.11.7",
-    "miniprogram-computed": "^8.0.0",
     "mobx-miniprogram": "^6.12.3",
     "mobx-miniprogram-bindings": "^6.0.0",
     "node-forge": "^1.4.0"

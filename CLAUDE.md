@@ -31,9 +31,8 @@
 |------|------|
 | `miniprogram/` | 小程序代码（pages/stores/components/behaviors/utils） |
 | `miniprogram/shared/` | `@sces/shared` 源码镜像（**生成物**，`npm run sync:shared` 同步，勿手改） |
-| `miniprogram/offline/` | 离线载荷（单位树/批次公钥，原生成物现自持） |
-| `miniprogram/config/runtime.ts` | 运行时常量（自持默认值；切换在线模式改 CAPABILITIES/SERVER_BASE_URL） |
-| `miniprogram/gateway/active.ts` | 网关选择（默认 `./offline`；在线化切 `./online`） |
+| `miniprogram/config/runtime.ts` | 运行时常量（在线版：SERVER_BASE_URL / CAPABILITIES，自持） |
+| `miniprogram/gateway/` | 学生端数据网关（`active.ts → online.ts` 唯一实现；接口见 SCES-Server/contracts） |
 | `scripts/` | sync-shared（镜像）、patch-node-forge（forge 环境补丁） |
 
 ## 微信端特有约束（重要）
@@ -41,7 +40,8 @@
 - **无 WebCrypto**：RSA-OAEP 由 node-forge 提供（`utils/crypto.ts` 引导，覆盖 `forge.random` 种子指向 `wx.getRandomValues` 强随机池，构建 npm 前先跑 `npm run patch:node-forge`）；AES-GCM/SHA-256 由 shared 内 noble 预打包提供。
 - **ES2017 语法上限**：微信解析器不支持 `?.`/`??`，用 `shared/src/nullish.ts` 的 `nz`/`opt` 替代。
 - **目录导入**：微信不支持「目录 → index.js」回退，镜像由 sync 脚本自动重写，本仓自身代码手动遵守（显式 `/index`）。
-- 在线化方向：内置单位配置与内测批次将随服务端（SCES-Server，M5）上线改为服务端下发。
+- 在线化（现状）：单位/批次/配置/状态由服务端下发（gateway online 实现，`api.sces.thisish.cn`）；本地仅加密存储草稿与证明材料（.dyf 文件交付，服务端不存分数/材料）。离线资产、本地授权与硬编码密钥已移除，不再维护离线版。
+- 本地保护：local-vault 的密钥 per-install 生成并落本地 storage（`utils/local-vault.ts`），无随包常量。
 
 ## 命令（仓库根）
 

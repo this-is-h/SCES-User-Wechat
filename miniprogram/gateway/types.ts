@@ -1,7 +1,6 @@
 /**
- * 学生端数据网关（Gateway）契约:两模式(offline/online)共用的唯一数据来源接缝。
- * 业务代码(pages/stores)只依赖本接口,不直接 require 包内 JSON,也不直接 wx.request。
- * 具体实现由 gateway/active.ts(构建期生成)在 ./offline 与 ./online 之间二选一导出。
+ * 学生端数据网关（Gateway）契约:业务代码(pages/stores)唯一数据来源接缝,
+ * 不直接 wx.request,也不依赖包内静态资源。实现见 gateway/online.ts(在线版唯一)。
  */
 import type { UnitConfig, Jwk } from '../shared/types/index'
 
@@ -13,10 +12,8 @@ export interface UnitTreeNode {
 }
 
 /**
- * 批次公开信息:两模式返回同型。
- * - offline:由 build-profile 的 buildBatchJson 产出(miniprogram/offline/batches/<unitId>.json)。
- * - online :由接口 11 的 BatchPublic 映射而来(seq 缺省)。
- * 学生端只消费其中加密与展示所需字段;私钥永不出现。
+ * 批次公开信息（接口 11 的 BatchPublic 映射；seq 仅历史离线字段）。
+ * 学生端只消费其中加密与展示所需字段；私钥永不出现。
  */
 export interface OfflineBatch {
   batchId: string
@@ -24,7 +21,7 @@ export interface OfflineBatch {
   year: number
   semester: number
   isTest: boolean
-  /** 离线派生序号(参与 batchId 派生);在线模式不返回,故可选。 */
+  /** 历史离线派生序号（在线接口不返回，保留兼容）。 */
   seq?: number
   /** 申请窗口开始(epoch ms);未设置为 null。 */
   applyStartAt: number | null

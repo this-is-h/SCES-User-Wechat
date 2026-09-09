@@ -43,16 +43,7 @@
   },
   "libVersion": "trial",
   "packOptions": {
-    "ignore": [
-      {
-        "type": "file",
-        "value": "gateway/online.ts"
-      },
-      {
-        "type": "folder",
-        "value": "offline/unused"
-      }
-    ],
+    "ignore": [],
     "include": []
   },
   "appid": "wx610071468b3255e0"

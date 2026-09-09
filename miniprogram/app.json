@@ -22,7 +22,7 @@
   },
   "entryPagePath": "pages/main/index",
   "darkmode": true,
-  "debug": true,
+  "debug": false,
   "componentFramework": "glass-easel",
   "lazyCodeLoading": "requiredComponents",
   "window": {

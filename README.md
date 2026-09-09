@@ -9,6 +9,7 @@
 |---|---|
 | `miniprogram/` | 小程序代码（pages / stores / components / behaviors / utils） |
 | `miniprogram/shared/` | `@sces/shared` 源码镜像（生成物，`npm run sync:shared` 同步，勿手改） |
+| `miniprogram/config/runtime.ts` | 运行时常量（在线版：SERVER_BASE_URL / CAPABILITIES） |
 | `miniprogram/package.json` | 小程序 npm 依赖（vant-weapp、mobx、node-forge 等），开发者工具「构建 npm」 |
 | `scripts/` | `sync-shared`（镜像同步）、`patch-node-forge`（forge 环境补丁） |
 
@@ -28,7 +29,8 @@ npm run type-check            # tsc 类型检查（ES2017 兼容约束）
 - **无 WebCrypto**：RSA-OAEP 由 node-forge 提供（`utils/crypto.ts` 引导，必须覆盖 `forge.random` 种子指向 `wx.getRandomValues` 强随机池）；AES-GCM/SHA-256 由 `@sces/shared` 内 noble 预打包提供。
 - **ES2017 语法上限**：微信解析器不支持 `?.`/`??`，用 `shared/src/nullish.ts` 的 `nz`/`opt` 替代。
 - **目录导入**：微信模块解析不支持"目录 → index.js"回退，shared 镜像由 sync 脚本自动重写，小程序自身代码手动遵守（显式 `/index`）。
-- 在线化方向：内置单位配置与内测批次将随服务端（M5）上线改为服务端下发。
+- **在线化（现状）**：单位/批次/配置/状态由服务端下发（`gateway/online.ts`，`https://api.sces.thisish.cn`）；本地仅加密存储草稿与证明材料（.dyf 文件交付）。离线资产/本地授权已移除，不再维护离线版。
+- **本地保护**：local-vault 密钥 per-install 生成落本地 storage，无随包硬编码密钥。
 
 ## 开发
 

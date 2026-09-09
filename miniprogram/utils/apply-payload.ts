@@ -10,18 +10,13 @@
  * - `exportedAt` 为导出时刻(决策 #48):管理端据此判定是否申请期外导出。
  * 纯函数,便于单元测试与三端对齐。
  */
+import { nz } from '../shared/nullish'
+
 /** dyf 明细项(.dyf payload 内的结构,与 shared ImportDyfEntry 同型)。 */
 export interface DyfExportEntry {
   score: number
   /** 证明材料 base64 数组。 */
   evidence?: string[]
-}
-
-/**
- * `??` 空值合并替代(微信 DevTools 解析器不支持 ES2020 `??`,见 shared/nullish.ts 与架构决策 #12)。
- */
-function nz<T>(value: T | null | undefined, fallback: T): T {
-  return value === null || value === undefined ? fallback : value
 }
 
 /** 构建申请 payload。student 为小程序 store 中的学生记录(键 = studentField.code)。 */

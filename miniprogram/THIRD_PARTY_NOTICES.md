@@ -37,7 +37,6 @@
 |------|------|------|------|
 | node-forge | 1.4.0 | **BSD-3-Clause（双许可，本项目选择 BSD-3-Clause）** | §node-forge |
 | @vant/weapp | ^1.11 | MIT | 通用 MIT 文本 |
-| miniprogram-computed | ^8 | MIT | 通用 MIT 文本 |
 | mobx-miniprogram | ^6 | MIT | 通用 MIT 文本 |
 | mobx-miniprogram-bindings | ^6 | MIT | 通用 MIT 文本 |
 | fast-deep-equal | ^3（传递） | MIT | 通用 MIT 文本 |
@@ -130,7 +129,7 @@ THE SOFTWARE.
 ## 通用 MIT 许可文本
 
 适用于上表标注「通用 MIT 文本」的全部 MIT 许可组件（electron-updater、better-sqlite3、
-exceljs、@tanstack/vue-table、@electron-toolkit/*、@vant/weapp、miniprogram-computed、
+exceljs、@tanstack/vue-table、@electron-toolkit/*、@vant/weapp、
 mobx-miniprogram、mobx-miniprogram-bindings、fast-deep-equal、rfdc 等）。
 各组件的具体版权行见其安装包内 `LICENSE` / `LICENSE.md` 文件。
 

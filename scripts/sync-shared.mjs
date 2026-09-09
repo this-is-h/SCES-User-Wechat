@@ -51,18 +51,11 @@ async function collectFiles(dir, rel = '') {
 }
 
 /**
- * 镜像排除的 Node-only 路径（相对 shared/src）。它们依赖 Node 专属能力，
- * 小程序侧无法运行，故不纳入镜像：
- * - license/      依赖 Node WebCrypto 的 PBKDF2/RSA-PSS，小程序不需要授权文件能力
- * - fingerprint.ts 依赖 node:os（hostname / 网卡 / 用户名），小程序无法运行
- * - crypto/sign.ts 依赖 Node WebCrypto 的 RSA-PSS，小程序侧不做验签
- * ids/ 保留镜像：小程序需要 deriveOfflineBatchId。
+ * 镜像排除的 Node-only 路径（相对 shared/src）。shared 0.2.0 起离线授权模块
+ * （license/、fingerprint.ts、crypto/sign.ts）与 ids/ 已从源中移除，
+ * 无 Node-only 路径需再排除；镜像仅排除测试文件与 esbuild 打包入口（见 mirrorFiles）。
  */
-const NODE_ONLY_EXCLUDES = [
-  'license',
-  'fingerprint.ts',
-  'crypto/sign.ts',
-]
+const NODE_ONLY_EXCLUDES = []
 
 /** 相对导入目标是否落在被排除路径内（文件精确匹配 / 目录前缀匹配）。 */
 function isExcluded(relPath) {

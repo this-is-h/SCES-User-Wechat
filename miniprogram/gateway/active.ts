@@ -1,8 +1,5 @@
 /**
- * 网关选择（仓库拆分前由 SCES-Management-Desktop-Electron build-profile.mjs 生成并 gitignore，
- * 拆分后本仓自持默认值）。offline 与 online 实现见 ./offline / ./online。
- *
- * 切换在线模式：改此文件为 './online'，并同步 config/runtime.ts 的 CAPABILITIES
- * 与 SERVER_BASE_URL。
+ * 网关选择（在线版唯一实现）。数据面仍为本地加密 + .dyf 文件交付；
+ * 单位/批次/配置/状态由服务端接口提供，实现见 ./online。
  */
-export { gateway } from './offline'
+export { gateway } from './online'

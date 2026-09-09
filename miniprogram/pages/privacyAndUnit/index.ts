@@ -27,8 +27,8 @@ const privateHtml = `
     </div>
     <div class="privacy-item">
       <div class="privacy-text">
-        <strong style="color:var(--van-doc-text-color-3)">🔒 数据完全本地处理</strong><br>
-        所有信息完全在本地处理，不会上传至任何服务器。
+        <strong style="color:var(--van-doc-text-color-3)">🔒 本地加密存储</strong><br>
+        个人信息与证明材料仅在您的设备上加密保存，不会上传服务器；仅提交申请编号哈希用于审核进度查询。
       </div>
     </div>
   </div>
@@ -53,7 +53,7 @@ ComponentWithStore({
     } as const,
   },
   // 组件用作页面：页面/组件生命周期需放在 lifetimes/methods，顶层 onLoad 不会被调用。
-  // 单位树在 attached 里经 gateway 加载（离线读包内 units.js，在线走接口 10）。
+  // 单位树在 attached 里经 gateway 加载（服务端接口下发）。
   lifetimes: {
     attached: async function () {
       const units = await gateway.listUnits()

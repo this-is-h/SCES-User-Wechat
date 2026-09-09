@@ -38,7 +38,7 @@
 
 - 来源：同级目录 `../SCES-Shared/src`（可用 `DMS_SHARED_SRC` 环境变量覆盖，供 CI 按 tag 拉取）；
 - 同步：`npm run sync:shared`；校验：`npm run check:shared-mirror`；
-- 镜像内含微信兼容重写（目录导入 → `/index`、ES2017）与 Node-only 路径排除；
+- 镜像内含微信兼容重写（目录导入 → `/index`、ES2017）；shared 0.2.0 起无 Node-only 模块需排除（离线授权链已随源删除）；
 - `node-forge` 需构建 npm 前执行 `npm run patch:node-forge`（幂等）。
 
 ## 发布流程
