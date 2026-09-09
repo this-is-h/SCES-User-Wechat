@@ -11,8 +11,8 @@
  * 2. `random.js` / `prng.js`：`globalScope.crypto` 访问前判空。
  *
  * 目标：
- * - `user/wechat/miniprogram/node_modules/node-forge/lib/*.js`（源码，供下次「构建 npm」使用）
- * - `user/wechat/miniprogram/miniprogram_npm/node-forge/index.js`（已构建产物，立即生效）
+ * - `SCES-User-Wechat/miniprogram/node_modules/node-forge/lib/*.js`（源码，供下次「构建 npm」使用）
+ * - `SCES-User-Wechat/miniprogram/miniprogram_npm/node-forge/index.js`（已构建产物，立即生效）
  *
  * 幂等：已修补（含 DMS patch 标记）则跳过。npm install 后需重新执行本脚本。
  *

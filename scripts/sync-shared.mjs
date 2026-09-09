@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * 受控镜像脚本：将 shared/src 复制到 user/wechat/miniprogram/shared/（决策 #8）。
+ * 受控镜像脚本：将 shared/src 复制到 SCES-User-Wechat/miniprogram/shared/（决策 #8）。
  *
  * 背景：微信小程序不在 pnpm workspace，无法直接引用 @sces/shared 包；
  * 通过本脚本把 shared 源码镜像进小程序工程，纳入 git 版本控制。

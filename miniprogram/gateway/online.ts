@@ -1,5 +1,5 @@
 /**
- * 在线网关实现(接口 10-13,路径以 server/contracts/openapi.yaml 为准)。
+ * 在线网关实现(接口 10-13,路径以 SCES-Server/contracts/openapi.yaml 为准)。
  * 离线档打包时本文件被 project.config.json 的 packOptions.ignore 排除(决策 #42),
  * 故绝不进入离线包;但仍参与类型检查,必须编译通过。
  * 错误策略与管理端 server-client.ts 一致:业务错误(中文)直接透传,否则按状态码翻译。

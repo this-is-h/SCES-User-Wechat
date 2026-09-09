@@ -1,4 +1,4 @@
-# user/wechat 学生端 — Agents
+# SCES-User-Wechat — Agents — Agents
 
 本目录的 Claude Code 子代理定义位于根目录 `.claude/agents/`（Claude Code 实际加载的位置）。
 
@@ -12,7 +12,7 @@
 
 ## 使用方式
 
-在 `user/wechat/` 目录下工作时，Claude Code 会按 `user/wechat/CLAUDE.md` 加载上下文。需要专项代理时调用对应代理。
+在 `SCES-User-Wechat/` 目录下工作时，Claude Code 会按 `SCES-User-Wechat/CLAUDE.md` 加载上下文。需要专项代理时调用对应代理。
 
 ## 当前重点（与目标的差距）
 
