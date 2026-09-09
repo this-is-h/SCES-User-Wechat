@@ -9,6 +9,11 @@ import {
   cleanupCompressedImage,
   compressImageForEvidence,
 } from "../../utils/image-compress";
+import {
+  isEvidenceRef,
+  readEvidenceBase64,
+} from "../../utils/local-vault";
+import { resolveFileEntryPath } from "../../utils/file-entry";
 
 import Notify from "@vant/weapp/notify/notify";
 import Toast from "@vant/weapp/toast/toast";
@@ -16,6 +21,41 @@ import Toast from "@vant/weapp/toast/toast";
 const themeBehavior = require("../../behaviors/theme/theme");
 let functionButtonObserver: WechatMiniprogram.IntersectionObserver | null =
   null;
+
+/**
+ * 校验单个证明材料条目是否真实可读（内容存在且非空）。
+ * - EvidenceRef: 解封 vault/evidence 密文，失败/为空视为失效。
+ * - legacy 路径: 文件存在且字节数 > 0；data URL 视为检查其内嵌内容是否为空。
+ * 用于导出二次确认时识别"条目仍在但文件已被清理/误删"的失效图片。
+ */
+function isFileEntryReadable(fileItem: unknown): Promise<boolean> {
+  if (isEvidenceRef(fileItem)) {
+    return readEvidenceBase64(fileItem).then(
+      (plainBase64) => Boolean(plainBase64),
+    );
+  }
+  const filePath = resolveFileEntryPath(fileItem);
+  if (!filePath) {
+    return Promise.resolve(false);
+  }
+  if (filePath.indexOf("data:") === 0) {
+    const splitIndex = filePath.indexOf(",");
+    return Promise.resolve(
+      splitIndex >= 0 && filePath.length > splitIndex + 1,
+    );
+  }
+  return new Promise<boolean>((resolve) => {
+    wx.getFileInfo({
+      filePath,
+      success: (result) => {
+        resolve(Number(result.size) > 0);
+      },
+      fail: () => {
+        resolve(false);
+      },
+    });
+  });
+}
 
 ComponentWithStore({
   behaviors: [themeBehavior],
@@ -649,7 +689,7 @@ ComponentWithStore({
         exportConfirmShow: false,
       });
     },
-    onExportDialogConfirm: function () {
+    onExportDialogConfirm: async function () {
       this.setData({
         exportConfirmShow: false,
       });
@@ -673,6 +713,12 @@ ComponentWithStore({
         string,
         { score?: unknown; file?: unknown[] }
       >;
+      // 清理缓存/垃圾清理可能误删本地图片文件：条目仍在（file 非空）但实际文件已缺失
+      // 或为空，缩略图仍显示已上传状态，导出却嵌入不到真实证明材料。二次确认时逐张
+      // 校验可读性，失效条目直接移除（恢复为未上传状态），并阻止导出、提示用户。
+      const nextScoreUpdate: Record<string, { file?: unknown[] }> = {};
+      let hasBrokenSupportImage = false;
+      let brokenSupportScrollId = "";
       let hasMissingSupportImage = false;
       let missingSupportScrollId = "";
 
@@ -699,17 +745,46 @@ ComponentWithStore({
                 : [];
             if (fileList.length === 0) {
               hasMissingSupportImage = true;
-              missingSupportScrollId = `score-field-${scoreId}`;
-              break;
+              if (!missingSupportScrollId) {
+                missingSupportScrollId = `score-field-${scoreId}`;
+              }
+              continue;
+            }
+            const keptFileList: unknown[] = [];
+            for (const fileItem of fileList) {
+              if (await isFileEntryReadable(fileItem)) {
+                keptFileList.push(fileItem);
+                continue;
+              }
+              hasBrokenSupportImage = true;
+              if (!brokenSupportScrollId) {
+                brokenSupportScrollId = `support-field-${scoreId}`;
+              }
+            }
+            if (keptFileList.length !== fileList.length) {
+              nextScoreUpdate[scoreId] = {
+                ...(currentScore || {}),
+                file: keptFileList,
+              };
             }
           }
-          if (hasMissingSupportImage) {
-            break;
-          }
         }
-        if (hasMissingSupportImage) {
-          break;
-        }
+      }
+      if (Object.keys(nextScoreUpdate).length > 0) {
+        this.updateStudentStore("score", nextScoreUpdate);
+      }
+      if (hasBrokenSupportImage) {
+        this.setData({
+          scrollIntoViewId: brokenSupportScrollId,
+        });
+        Toast.clear();
+        Notify({
+          type: "danger",
+          message: "部分证明材料图片文件已丢失，已移除失效图片，请重新上传后再导出",
+          safeAreaInsetTop: true,
+          top: 46,
+        });
+        return;
       }
       if (hasMissingSupportImage) {
         this.setData({
