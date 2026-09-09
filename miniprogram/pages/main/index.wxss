@@ -72,7 +72,7 @@
 .floating-export-button {
   position: fixed;
   right: 16px;
-  bottom: 60px;
+  bottom: calc(60px + env(safe-area-inset-bottom));
   z-index: 1000;
   opacity: 0;
   transform: translateY(10px);
@@ -92,6 +92,7 @@
 
 .export-dialog-title {
   font-weight: bold;
+  color: var(--van-doc-text-color-1);
 }
 
 .export-dialog-notice {
@@ -103,6 +104,7 @@
   flex-direction: column;
   align-items: center;
   margin: 1em 0;
+  color: var(--van-doc-text-color-2);
 }
 
 .export-dialog-content-strong {

@@ -50,6 +50,7 @@
 
 .root scroll-view .scroll-root {
   padding: 24rpx;
+  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
 
@@ -190,11 +191,11 @@
 
 .sign-btn.main {
   background: var(--van-doc-blue);
-  color: var(--van-doc-white);
+  /* color: var(--van-doc-white); */
 }
 
 .sign-btn.plain {
-  color: var(--van-doc-text-color-2);
+  /* color: var(--van-doc-text-color-2); */
 }
 
 .closing {
