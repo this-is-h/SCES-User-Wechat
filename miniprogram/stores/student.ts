@@ -21,7 +21,6 @@ import { setCurrentBatch, clearBatch } from "./batch";
 import { resolveConfig, familyKeyFor } from "./config";
 import type { RenderItem, ApplicableCategory } from "./config";
 import { draftStorageKey, readStored, writeStored } from "../utils/local-vault";
-import { deriveOfflineBatchId } from "../shared/ids/index";
 
 type PathNode = { text: string; value: string; [key: string]: unknown };
 
@@ -545,38 +544,6 @@ async function migrationSource(
         entry.semester === batch.semester,
     );
     if (test) return { entry: test, mode: "test-to-formal" };
-    // 兼容历史版本：旧草稿没有 batch-history 时，按确定性 batchId 回查同学期测试批次。
-    try {
-      for (let seq = 1; seq <= 20; seq++) {
-        const batchId = await deriveOfflineBatchId({
-          unitId,
-          year: batch.year,
-          semester: batch.semester,
-          isTest: true,
-          seq,
-        });
-        const hasDraft = Boolean(
-          wx.getStorageSync(scopedKey(unitId, batchId, "info")) ||
-          wx.getStorageSync(scopedKey(unitId, batchId, "classValue")) ||
-          wx.getStorageSync(scopedKey(unitId, batchId, "student")) ||
-          wx.getStorageSync(scopedKey(unitId, batchId, "score")),
-        );
-        if (hasDraft) {
-          return {
-            entry: {
-              batchId,
-              year: batch.year,
-              semester: batch.semester,
-              isTest: true,
-              seenAt: 0,
-            },
-            mode: "test-to-formal",
-          };
-        }
-      }
-    } catch (error) {
-      void error;
-    }
   }
   const previousTerm = history.find(
     (entry) => entry.year !== batch.year || entry.semester !== batch.semester,
