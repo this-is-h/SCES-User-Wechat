@@ -1,6 +1,6 @@
 /**
- * 能力位:UI 降级只依据 capabilities,不依据 MODE(决策 #42/#57)。
- * CAPABILITIES 由 build-profile 写入 config/runtime.ts(构建期定死),此处仅补类型。
+ * 能力位:UI 降级只依据 capabilities,不依据 MODE。
+ * CAPABILITIES 定义于 config/runtime.ts(在线版自持常量),此处仅补类型。
  */
 import { CAPABILITIES } from '../config/runtime'
 

@@ -19,11 +19,13 @@
 
 .welcome-title {
   font-size: 48rpx;
+  color: var(--van-doc-text-color-1);
 }
 
 .welcome-info-subhead {
   border-left: 3px solid var(--van-doc-blue);
   padding-left: 12px;
+  color: var(--van-doc-text-color-2);
 }
 
 .privacy-highlight {

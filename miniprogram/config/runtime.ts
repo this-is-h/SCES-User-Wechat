@@ -1,16 +1,16 @@
-// 学生端运行时常量（仓库拆分后自持默认值，保留当前联调发布档）。
-// 切换在线模式/换发档：改 CAPABILITIES/SERVER_BASE_URL/PROFILE_ID；VAULT_SECRET 轮换见 CLAUDE。
-export const MODE = 'offline'
-export const PROFILE_ID = 'offline-2026s1'
-export const SERVER_BASE_URL = ''
+// 学生端运行时常量（在线版）。数据面：本地密封存储 + .dyf 加密文件交付；
+// 单位/批次/配置/状态经 gateway 与服务端同步（SCES-Server / SCES-Server-Vercel）。
+// 本地保护密钥（local-vault）为 per-install 生成并落本地 storage，不随代码分发。
+export const MODE = 'online'
+export const PROFILE_ID = 'online-2026s1'
+export const SERVER_BASE_URL = 'https://api.sces.thisish.cn'
 export const CAPABILITIES = {
-  mode: 'offline',
-  profileId: 'offline-2026s1',
-  source: 'bundled',
-  deadlineAuthority: 'local-advisory',
-  statusQuery: false,
+  mode: 'online',
+  profileId: 'online-2026s1',
+  source: 'server',
+  deadlineAuthority: 'server',
+  statusQuery: true,
   rankingView: false,
-  remoteLock: false,
+  remoteLock: true,
   localVault: true
 }
-export const VAULT_SECRET = 'bE1ONk9o+cVyB0JwF4PPWH3YKcE1yPxCfN3XdnxId8E='

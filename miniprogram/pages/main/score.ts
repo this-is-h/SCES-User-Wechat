@@ -19,6 +19,7 @@ import { gateway } from "../../gateway/active";
 import { buildApplyPayload, toDyfExportMap } from "../../utils/apply-payload";
 import { formatApplyWindowHint } from "../../config/messages";
 import { isEvidenceRef, readEvidenceBase64 } from "../../utils/local-vault";
+import { resolveFileEntryPath } from "../../utils/file-entry";
 import { capabilities } from "../../gateway/capabilities";
 
 const themeBehavior = require("../../behaviors/theme/theme");
@@ -154,23 +155,7 @@ ComponentWithStore({
           });
           return;
         }
-        const onlyMaxResult = this.buildOnlyMaxScoreUpdate();
-        const reservedScoreUpdate = this.applyReservedScoreOperations(
-          onlyMaxResult.updateData,
-        );
-        if (Object.keys(reservedScoreUpdate).length > 0) {
-          this.updateStudentStore("score", reservedScoreUpdate);
-          this.updateStoreBindings();
-        }
         await this.buildRenderData();
-        if (onlyMaxResult.notifyMessages.length > 0) {
-          Notify({
-            type: "primary",
-            message: onlyMaxResult.notifyMessages.join("\n"),
-            safeAreaInsetTop: true,
-            top: 46,
-          });
-        }
       } catch (error) {
         Notify({
           type: "danger",
@@ -184,119 +169,6 @@ ComponentWithStore({
           scoreLoading: false,
         });
       }
-    },
-    buildOnlyMaxScoreUpdate: function () {
-      const scoreInfo = Array.isArray(this.data.scoreInfo)
-        ? this.data.scoreInfo
-        : [];
-      const currentScore = (this.data.score || {}) as Record<
-        string,
-        { score?: unknown; file?: unknown[] }
-      >;
-      const nextUpdate: Record<string, { score?: number; file?: unknown[] }> =
-        {};
-      const notifyMessageSet = new Set<string>();
-      const walkNode = (node) => {
-        if (!node || typeof node !== "object") {
-          return;
-        }
-        const onlyMax = !!(node.onlyMax || node.onlymax);
-        const children = Array.isArray(node.data) ? node.data : [];
-        const isLeafScoreList =
-          children.length > 0 &&
-          children.every((item) => item && item.number != null);
-        if (onlyMax && isLeafScoreList) {
-          let hasNodeUpdated = false;
-          let maxScore = Number.NEGATIVE_INFINITY;
-          let maxIndex = -1;
-          const scoreValues: number[] = [];
-          children.forEach((scoreItem, index) => {
-            const scoreId = String(
-              scoreItem && scoreItem.number == null ? "" : scoreItem.number,
-            );
-            const scoreValue = Number(
-              (currentScore[scoreId] && currentScore[scoreId].score) || 0,
-            );
-            const normalizedScore = Number.isFinite(scoreValue)
-              ? scoreValue
-              : 0;
-            scoreValues.push(normalizedScore);
-            if (normalizedScore > maxScore) {
-              maxScore = normalizedScore;
-              maxIndex = index;
-            }
-          });
-          children.forEach((scoreItem, index) => {
-            const scoreId = String(
-              scoreItem && scoreItem.number == null ? "" : scoreItem.number,
-            );
-            if (!scoreId || index === maxIndex) {
-              return;
-            }
-            const rawMin =
-              scoreItem && scoreItem.score_type && scoreItem.score_type.min;
-            const minScore = typeof rawMin === "number" ? rawMin : 0;
-            const existedItem = currentScore[scoreId] || {};
-            if (
-              scoreValues[index] === minScore &&
-              (!Array.isArray(existedItem.file) ||
-                existedItem.file.length === 0)
-            ) {
-              return;
-            }
-            nextUpdate[scoreId] = {
-              ...existedItem,
-              score: minScore,
-              ...(scoreItem && scoreItem.support && scoreItem.support.need
-                ? { file: [] }
-                : {}),
-            };
-            hasNodeUpdated = true;
-          });
-          if (
-            hasNodeUpdated &&
-            typeof node.onlyMaxMessage === "string" &&
-            node.onlyMaxMessage.trim()
-          ) {
-            notifyMessageSet.add(node.onlyMaxMessage.trim());
-          }
-        }
-        children.forEach((item) => {
-          walkNode(item);
-        });
-      };
-      scoreInfo.forEach((group) => {
-        walkNode(group);
-      });
-      return {
-        updateData: nextUpdate,
-        notifyMessages: Array.from(notifyMessageSet),
-      };
-    },
-    applyReservedScoreOperations: function (
-      nextScore: Record<string, { score?: number; file?: unknown[] }>,
-    ) {
-      return nextScore;
-    },
-    getScoreFilePath: function (fileItem: unknown) {
-      if (typeof fileItem === "string") {
-        return fileItem;
-      }
-      if (
-        !fileItem ||
-        typeof fileItem !== "object" ||
-        Array.isArray(fileItem)
-      ) {
-        return "";
-      }
-      const fileRecord = fileItem as Record<string, unknown>;
-      return String(
-        fileRecord.url ||
-          fileRecord.localPath ||
-          fileRecord.tempFilePath ||
-          fileRecord.path ||
-          "",
-      );
     },
     readLocalFileBase64: function (filePath: string) {
       return new Promise<string>((resolve) => {
@@ -349,7 +221,7 @@ ComponentWithStore({
             }
             continue;
           }
-          const filePath = this.getScoreFilePath(fileItem);
+          const filePath = resolveFileEntryPath(fileItem);
           if (!filePath) {
             continue;
           }

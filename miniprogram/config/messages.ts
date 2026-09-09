@@ -1,14 +1,11 @@
 /**
- * 降级文案集中模块(dual-mode/05-student-client.md §5, 决策 #42/#57)。
- *
- * 所有因能力缺失(离线)产生的提示文案集中在此定义;页面只做能力判断
- * wx:if="{{caps.statusQuery}}" 等,不写模式分支(决策 #57 断言 2)。
- * 文案与日期格式化统一管理,避免各处漂移、便于在线档恢复时一并核对。
+ * 文案集中模块(决策 #57)。状态卡片/重复导出等提示统一管理,避免各处漂移。
+ * 页面只做能力判断 wx:if="{{caps.statusQuery}}" 等,不写模式分支。
  */
 import type { OfflineBatch } from '../gateway/types'
 
-/** 审核状态卡片被隐藏时的说明文案(offline 时 statusQuery=false)。状态只存在于管理端本机。 */
-export const STATUS_HINT = '本版本未联网，审核进度请咨询班级负责人'
+/** 审核状态不可用时的说明文案（服务端未就绪/查询失败时兜底展示）。 */
+export const STATUS_HINT = '审核进度暂时无法获取，请稍后重试或咨询班级负责人'
 
 /**
  * 重复导出前的强提示(offline 时 remoteLock=false,本地始终允许重导,

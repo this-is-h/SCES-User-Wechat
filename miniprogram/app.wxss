@@ -98,7 +98,7 @@ page {
 
 .root scroll-view {
   box-sizing: border-box;
-  height: calc(100vh - 46px - 50px - var(--status-bar-height));
+  height: calc(100vh - 46px - 50px - env(safe-area-inset-bottom) - var(--status-bar-height));
 }
 
 .root scroll-view .scroll-root {
@@ -106,8 +106,13 @@ page {
   padding: 20px 0;
 }
 
-/* Vant Cascader 1.11 hard-codes the tab colors, so keep its selected path
- * readable when the surrounding theme switches to dark mode. */
+/* Vant 1.11 hard-codes light-theme colors inside Cascader and Dialog.
+ * Rebind them to the active palette (via van-config-provider) so everything
+ * stays readable in dark mode. The extra classes/`!important` raise
+ * specificity above the library's own `!important` rules: component styles
+ * win on ties, so a single class is not enough. */
+
+/* Cascader header title */
 .van-cascader__title {
   color: var(--van-doc-text-color-1) !important;
 }
@@ -116,10 +121,58 @@ page {
   background-color: var(--tabs-nav-background-color) !important;
 }
 
-.van-cascader__tab {
+/* Cascader tab breadcrumb text — the library forces #323233 (selected) with
+ * `!important`; `.van-tab` sits on the same element and beats the tie. */
+.van-cascader__tab.van-tab,
+.van-cascader__tab.van-tab--active {
   color: var(--tab-text-color) !important;
 }
 
 .van-cascader__tab--unselected {
   color: var(--tab-disabled-text-color) !important;
+}
+
+/* Cascader option text — the library leaves it uncolored, so it inherits the
+ * page's light-theme color (#111827) and is unreadable on dark popups. */
+.van-cascader__option {
+  color: var(--van-doc-text-color-1) !important;
+}
+
+.van-cascader__option--selected {
+  color: var(--van-doc-link-color) !important;
+}
+
+.van-cascader__option--disabled {
+  color: var(--van-doc-gray-5) !important;
+}
+
+.van-cascader__option:active {
+  background-color: var(--van-doc-gray-2) !important;
+}
+
+/* Dialog cancel button — the library inlines a light-theme gray (#323233)
+ * via custom-style, invisible against the dark popup background. */
+.van-dialog__cancel {
+  color: var(--button-default-color) !important;
+}
+
+/* Dialog header text — the library leaves it uncolored, so it inherits the
+ * page's light-theme color (#111827) and vanishes on dark popups. */
+.van-dialog__header {
+  color: var(--van-doc-text-color-1) !important;
+}
+
+/* Uploader chips — the library hard-codes a light "add" chip with a faint
+ * plus icon (#f7f8fa/#dcdee0, barely reads even in light mode) and a dark
+ * file icon (#646566) that vanishes on dark cards. Rebind to the palette. */
+.van-uploader__upload {
+  background-color: var(--van-doc-background-3) !important;
+}
+
+.van-uploader__upload-icon {
+  color: var(--van-doc-text-color-4) !important;
+}
+
+.van-uploader__file-icon {
+  color: var(--van-doc-text-color-4) !important;
 }
