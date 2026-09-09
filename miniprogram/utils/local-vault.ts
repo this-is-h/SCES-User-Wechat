@@ -1,23 +1,23 @@
 /**
- * 本地数据保护（决策 #47，架构 05 §4.2）。
+ * 本地数据保护（决策 #47）。
  *
  * 把落盘内容变成密文串，避免用户 PII 与证明材料以明文存在于 storage / 文件系统。
- * 密钥 = sha256(编译进包的 appSecret ‖ 首启生成的 deviceSalt)。
+ * 密钥 = sha256(派生域 ‖ per-install 密钥 ‖ 首启生成的 deviceSalt)。
  *
  * 安全边界（务必如实告知）：能防明文落盘、storage 导出、误分享、手机备份泄露；
- * 不能防「拿到小程序包 + 设备存储」的定向攻击者——appSecret 在包内，理论可提取。
- * 详见 dual-mode/10-risks.md §3。
+ * 不能防「拿到小程序包 + 设备存储」的定向攻击者——密钥存于本地 storage，理论可提取。
  *
- * 派生（已验证，见 poc/README.md 断言 14/15）：
- *   appSecret  : 32B 随机，deploy/secrets/student-vault.json → 生成进 config/runtime.ts（base64）
+ * 派生：
+ *   appSecret  : 32B 随机，per-install 生成（首启 randomBytes(32)）→ storage key 'vaultSecret'
  *   deviceSalt : 32B 随机，首启 randomBytes(32) → storage key 'vaultSalt'（非机密）
  *   vaultKey   = sha256( utf8('dys-local-vault-v1:') ‖ appSecret ‖ deviceSalt )
  *   密文串     = `1.<base64 iv(12B)>.<base64 AES-256-GCM(vaultKey, utf8(json))>`
  *
  * - 单次 sha256 而非 HKDF/PBKDF2：IKM 是 32 字节高熵随机串，不是低熵口令，拉伸无意义。
- * - deviceSalt 使不同设备的密文互不通用：即便 appSecret 泄露，也需逐设备取 salt 才能解。
- * - openJson / openBytes 失败返回 null 而不抛：换版本导致 appSecret 轮换、或用户清了
- *   salt，草稿解不开是预期情况，必须优雅退化为「没有草稿」。
+ * - deviceSalt 使不同设备的密文互不通用：即便密钥泄露，也需逐设备取 salt 才能解。
+ * - openJson / openBytes 失败返回 null 而不抛：密钥轮换、或用户清了 storage，
+ *   草稿解不开是预期情况，必须优雅退化为「没有草稿」。
+ * - 离线版（beta）曾用编译进包的固定常量作 appSecret；该版本已下线，旧密文不再可解（视为作废）。
  *
  * ES2017 目标：不用 `?.` / `??` / `catch {}`（见 shared/nullish.ts）。
  */
@@ -25,13 +25,15 @@ import { getCryptoProvider } from '../shared/crypto/index'
 import { aesGcmEncrypt, aesGcmDecrypt } from '../shared/crypto/aes'
 import { sha256Bytes, sha256Hex } from '../shared/crypto/hash'
 import { bytesToBase64, base64ToBytes, utf8ToBytes, bytesToUtf8 } from '../shared/crypto/encoding'
-import { VAULT_SECRET } from '../config/runtime'
 import { ensureRandomPool } from './crypto'
+import { fileEntryMeta, resolveFileEntryPath } from './file-entry'
 
 /** 存储密钥版本号（0 = 旧明文；1 = 当前密封）。 */
 export const VAULT_VERSION_KEY = 'vaultVersion'
 /** deviceSalt 的 storage key（非机密，仅用于派生密钥）。 */
 const DEVICE_SALT_KEY = 'vaultSalt'
+/** per-install 保护密钥的 storage key（32B base64，首启生成，不随代码分发）。 */
+const VAULT_SECRET_KEY = 'vaultSecret'
 /** 密封串版本前缀（与决策 #47 一致）。 */
 const SEAL_VERSION = '1'
 /** 密钥派生域分隔常量。 */
@@ -60,17 +62,25 @@ export interface EvidenceRef {
 let cachedVaultKey: Uint8Array | null = null
 let vaultKeyPromise: Promise<Uint8Array> | null = null
 
-/** 解密 VAULT_SECRET（base64 → 32B）。 */
-function appSecretBytes(): Uint8Array {
-  const raw = String(VAULT_SECRET || '').trim()
-  if (!raw) {
-    throw new Error('缺少本地保护密钥材料（VAULT_SECRET）')
+/** 读取（或首启生成并落盘）本机保护密钥（32B）。 */
+function getAppSecret(): Uint8Array {
+  const stored = wx.getStorageSync(VAULT_SECRET_KEY)
+  if (stored && typeof stored === 'string') {
+    try {
+      const bytes = base64ToBytes(stored)
+      if (bytes.length === 32) {
+        return bytes
+      }
+    } catch (error) {
+      // 损坏的密钥：走重新生成路径
+    }
   }
-  const bytes = base64ToBytes(raw)
-  if (bytes.length !== 32) {
-    throw new Error('本地保护密钥材料长度异常（应 32 字节）')
+  if (stored && typeof stored === 'string') {
+    console.warn('[vault] 本地保护密钥损坏，本机已加密的草稿可能无法恢复；将重新生成密钥')
   }
-  return bytes
+  const fresh = getCryptoProvider().randomBytes(32)
+  wx.setStorageSync(VAULT_SECRET_KEY, bytesToBase64(fresh))
+  return fresh
 }
 
 /** 读取（或首启生成并落盘）deviceSalt（32B）。 */
@@ -104,7 +114,7 @@ export function ensureDerivedKey(): Promise<Uint8Array> {
   if (!vaultKeyPromise) {
     vaultKeyPromise = (async () => {
       const prefix = utf8ToBytes(VAULT_DOMAIN)
-      const appSecret = appSecretBytes()
+      const appSecret = getAppSecret()
       const deviceSalt = getDeviceSalt()
       const input = new Uint8Array(prefix.length + appSecret.length + deviceSalt.length)
       input.set(prefix, 0)
@@ -478,32 +488,8 @@ function readFileBase64(filePath: string): Promise<string> {
   })
 }
 
-/** 从 legacy file 元素提取路径（path object / string / base64 data-url）。 */
-function fileItemPath(fileItem: unknown): string {
-  if (typeof fileItem === 'string') {
-    return fileItem
-  }
-  if (!fileItem || typeof fileItem !== 'object' || Array.isArray(fileItem)) {
-    return ''
-  }
-  const record = fileItem as Record<string, unknown>
-  return String(record.url || record.localPath || record.tempFilePath || record.path || '')
-}
-
-/** 从 legacy file 元素提取展示元数据。 */
-function fileItemMeta(fileItem: unknown): { name: string; size: number; mime: string } {
-  const record = (fileItem && typeof fileItem === 'object' && !Array.isArray(fileItem))
-    ? (fileItem as Record<string, unknown>)
-    : null
-  return {
-    name: String((record && record.name) || ''),
-    size: Number(record && record.size) || 0,
-    mime: String((record && (record.mimeType || record.type || record.mime)) || ''),
-  }
-}
-
 /**
- * 一次性迁移（决策 #47 / 架构 05 §4.4）：
+ * 一次性迁移（决策 #47）：
  * 1. 生成并写入 deviceSalt（若无）。
  * 2. 密封 PII 键（student/score/apply）。
  * 3. score[*].file 的 legacy path 元素 → 读 base64 → sealBytes 落 vault/evidence/ → 换 EvidenceRef。
@@ -555,7 +541,7 @@ export function migrateLocalVault(): Promise<void> {
                 refs.push(fileItem)
                 continue
               }
-              const filePath = fileItemPath(fileItem)
+              const filePath = resolveFileEntryPath(fileItem)
               if (!filePath) {
                 refs.push(fileItem)
                 continue
@@ -565,7 +551,7 @@ export function migrateLocalVault(): Promise<void> {
                 refs.push(fileItem)
                 continue
               }
-              const ref = await writeEvidence(base64Text, fileItemMeta(fileItem))
+              const ref = await writeEvidence(base64Text, fileEntryMeta(fileItem))
               refs.push(ref)
               itemChanged = true
             }
