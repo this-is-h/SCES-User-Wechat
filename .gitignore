@@ -9,3 +9,7 @@ project.private.config.json
 
 # shared 镜像源校验标记（--check 产物，勿提交）
 .tmpdiff/
+
+# 本地环境变量（密钥，勿提交）
+.env
+.env.*
