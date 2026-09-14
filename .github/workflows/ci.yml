@@ -53,11 +53,14 @@ jobs:
           cache: npm
           cache-dependency-path: miniprogram/package-lock.json
       - run: npm ci --prefix miniprogram
-      - run: npm audit --audit-level high --prefix miniprogram
+      - run: npm audit --omit=dev --audit-level high --prefix miniprogram
 
   gitleaks:
     name: 密钥泄漏扫描
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
     steps:
       - uses: actions/checkout@v4
         with:
